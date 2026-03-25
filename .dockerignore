@@ -15,16 +15,6 @@ dist/
 *.swo
 *~
 .git/
-.gitignore
-README.md
-Dockerfile.dev
-docker-compose.yml
-.dockerignore
-nginx.conf
-.env.example
-vite.config.ts
-tsconfig.json
-tsconfig.node.json
-index.html
 .github/
+.gitignore
 .gitattributes
