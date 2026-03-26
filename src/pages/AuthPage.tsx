@@ -45,7 +45,7 @@ const AuthPage = () => {
     if (error) {
       showMessage(error.message, 'error');
     } else {
-      navigate('/auth/success');
+      navigate('/options');
     }
     setLoading(false);
   };
@@ -79,7 +79,7 @@ const AuthPage = () => {
     if (error) {
       showMessage(error.message, 'error');
     } else {
-      navigate('/auth/success');
+      navigate('/options');
     }
     setLoading(false);
   };

@@ -18,7 +18,7 @@ const AuthCallback = () => {
       }
 
       if (data.session) {
-        navigate('/auth/success');
+        navigate('/options');
         return;
       }
 
@@ -27,7 +27,7 @@ const AuthCallback = () => {
         data: { subscription },
       } = supabase.auth.onAuthStateChange((event) => {
         if (event === 'SIGNED_IN' || event === 'PASSWORD_RECOVERY') {
-          navigate('/auth/success');
+          navigate('/options');
         }
       });
 
