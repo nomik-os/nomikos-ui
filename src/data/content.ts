@@ -239,4 +239,5 @@ export const NAV_LINKS = [
   { label: 'Products', href: '#suite' },
   { label: 'How It Works', href: '#how' },
   { label: 'Pricing', href: '#pricing' },
+  { label: 'Options', href: '/options' },
 ];
