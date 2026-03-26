@@ -1,6 +1,8 @@
 .navbar {
   position: fixed;
-  top: 0; left: 0; right: 0;
+  top: 0;
+  left: 0;
+  right: 0;
   z-index: 100;
   display: flex;
   align-items: center;
@@ -10,7 +12,10 @@
   backdrop-filter: blur(14px);
   -webkit-backdrop-filter: blur(14px);
   border-bottom: 1px solid transparent;
-  transition: border-color 0.3s, background 0.3s, padding 0.3s;
+  transition:
+    border-color 0.3s,
+    background 0.3s,
+    padding 0.3s;
 }
 .navbar--scrolled {
   background: rgba(245, 240, 232, 0.94);
@@ -27,7 +32,9 @@
   letter-spacing: -0.02em;
   color: var(--ink);
 }
-.navbar__logo-dot { color: var(--gold); }
+.navbar__logo-dot {
+  color: var(--gold);
+}
 
 /* Links */
 .navbar__links {
@@ -44,7 +51,9 @@
   color: var(--muted);
   transition: color 0.2s;
 }
-.navbar__links a:hover { color: var(--ink); }
+.navbar__links a:hover {
+  color: var(--ink);
+}
 
 /* CTA */
 .navbar__cta {
@@ -58,7 +67,9 @@
   padding: 0.6rem 1.4rem;
   transition: background 0.2s;
 }
-.navbar__cta:hover { background: var(--gold); }
+.navbar__cta:hover {
+  background: var(--gold);
+}
 
 /* Burger (mobile) */
 .navbar__burger {
@@ -75,27 +86,45 @@
   width: 22px;
   height: 1.5px;
   background: var(--ink);
-  transition: transform 0.25s, opacity 0.25s;
+  transition:
+    transform 0.25s,
+    opacity 0.25s;
   transform-origin: center;
 }
-.navbar__burger--open span:nth-child(1) { transform: translateY(6.5px) rotate(45deg); }
-.navbar__burger--open span:nth-child(2) { opacity: 0; }
-.navbar__burger--open span:nth-child(3) { transform: translateY(-6.5px) rotate(-45deg); }
+.navbar__burger--open span:nth-child(1) {
+  transform: translateY(6.5px) rotate(45deg);
+}
+.navbar__burger--open span:nth-child(2) {
+  opacity: 0;
+}
+.navbar__burger--open span:nth-child(3) {
+  transform: translateY(-6.5px) rotate(-45deg);
+}
 
 @media (max-width: 900px) {
-  .navbar { padding: 1rem 1.5rem; }
-  .navbar__burger { display: flex; }
+  .navbar {
+    padding: 1rem 1.5rem;
+  }
+  .navbar__burger {
+    display: flex;
+  }
   .navbar__links {
     display: none;
     position: absolute;
-    top: 100%; left: 0; right: 0;
+    top: 100%;
+    left: 0;
+    right: 0;
     flex-direction: column;
     gap: 0;
     background: var(--paper);
     border-bottom: 1px solid var(--border);
   }
-  .navbar__links--open { display: flex; }
-  .navbar__links li { border-bottom: 1px solid var(--border); }
+  .navbar__links--open {
+    display: flex;
+  }
+  .navbar__links li {
+    border-bottom: 1px solid var(--border);
+  }
   .navbar__links a {
     display: block;
     padding: 1rem 1.5rem;

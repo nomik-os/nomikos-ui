@@ -104,8 +104,14 @@
 }
 
 @keyframes authFadeIn {
-  from { opacity: 0; transform: translateY(12px); }
-  to   { opacity: 1; transform: translateY(0); }
+  from {
+    opacity: 0;
+    transform: translateY(12px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
 }
 
 /* ── Header ── */
@@ -183,7 +189,9 @@
   border-radius: 2px;
   color: var(--ink);
   outline: none;
-  transition: border-color var(--duration) var(--ease), box-shadow var(--duration) var(--ease);
+  transition:
+    border-color var(--duration) var(--ease),
+    box-shadow var(--duration) var(--ease);
 }
 
 .auth__input::placeholder {
@@ -215,7 +223,7 @@
   user-select: none;
 }
 
-.auth__checkbox input[type="checkbox"] {
+.auth__checkbox input[type='checkbox'] {
   display: none;
 }
 
@@ -226,16 +234,18 @@
   border-radius: 2px;
   background: var(--cream);
   position: relative;
-  transition: background var(--duration) var(--ease), border-color var(--duration) var(--ease);
+  transition:
+    background var(--duration) var(--ease),
+    border-color var(--duration) var(--ease);
   flex-shrink: 0;
 }
 
-.auth__checkbox input[type="checkbox"]:checked + .auth__checkmark {
+.auth__checkbox input[type='checkbox']:checked + .auth__checkmark {
   background: var(--ink);
   border-color: var(--ink);
 }
 
-.auth__checkbox input[type="checkbox"]:checked + .auth__checkmark::after {
+.auth__checkbox input[type='checkbox']:checked + .auth__checkmark::after {
   content: '';
   position: absolute;
   left: 4.5px;
@@ -258,7 +268,11 @@
   border: none;
   border-radius: 2px;
   cursor: pointer;
-  transition: background var(--duration) var(--ease), color var(--duration) var(--ease), border-color var(--duration) var(--ease), opacity var(--duration) var(--ease);
+  transition:
+    background var(--duration) var(--ease),
+    color var(--duration) var(--ease),
+    border-color var(--duration) var(--ease),
+    opacity var(--duration) var(--ease);
   display: flex;
   align-items: center;
   justify-content: center;

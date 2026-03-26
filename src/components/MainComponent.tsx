@@ -5,16 +5,16 @@ import {
   AUDIENCE,
   TESTIMONIALS,
   PRICING,
-} from '../data/content'
-import "../styles/MainComponent.css";
+} from '../data/content';
+import '../styles/MainComponent.css';
 
 /* ── Shared primitives ───────────────────────────────────────────────── */
 function SectionLabel({ children }: { children: React.ReactNode }) {
-  return <p className="section-label">{children}</p>
+  return <p className="section-label">{children}</p>;
 }
 
 function SectionTitle({ children }: { children: React.ReactNode }) {
-  return <h2 className="section-title">{children}</h2>
+  return <h2 className="section-title">{children}</h2>;
 }
 
 /* ── Problem ─────────────────────────────────────────────────────────── */
@@ -25,13 +25,19 @@ function Problem() {
         <SectionLabel>The Problem</SectionLabel>
         <SectionTitle>Indian court filings are structurally broken</SectionTitle>
         <p>
-          Forum-specific rules, bench-level variations, hybrid digital-physical
-          workflows — and no system to validate compliance before submission.
+          Forum-specific rules, bench-level variations, hybrid digital-physical workflows — and no
+          system to validate compliance before submission.
         </p>
-        <p>Every defective filing costs a lawyer 12–15 hours. Multiplied across every matter, every month.</p>
+        <p>
+          Every defective filing costs a lawyer 12–15 hours. Multiplied across every matter, every
+          month.
+        </p>
         <div className="problem__highlight">
           <strong>One full-time legal resource</strong>
-          <p>Lost every year — by mid-tier firms filing 4–8 matters a month — to procedural correction alone.</p>
+          <p>
+            Lost every year — by mid-tier firms filing 4–8 matters a month — to procedural
+            correction alone.
+          </p>
         </div>
       </div>
 
@@ -47,7 +53,7 @@ function Problem() {
         ))}
       </div>
     </section>
-  )
+  );
 }
 
 /* ── Products ────────────────────────────────────────────────────────── */
@@ -57,27 +63,31 @@ function Products() {
       <header className="products__header">
         <SectionLabel>Product Suite</SectionLabel>
         <SectionTitle>
-          Four tools.<br />One intelligent platform.
+          Four tools.
+          <br />
+          One intelligent platform.
         </SectionTitle>
       </header>
 
       <div className="products__grid">
         {PRODUCTS.map((p) => (
           <div className="product-card" key={p.title}>
-            <span className={`product-card__tag product-card__tag--${p.tagVariant}`}>
-              {p.tag}
+            <span className={`product-card__tag product-card__tag--${p.tagVariant}`}>{p.tag}</span>
+            <span className="product-card__icon" role="img" aria-hidden="true">
+              {p.icon}
             </span>
-            <span className="product-card__icon" role="img" aria-hidden="true">{p.icon}</span>
             <h3 className="product-card__title">{p.title}</h3>
             <p className="product-card__desc">{p.description}</p>
             <ul className="product-card__features">
-              {p.features.map((f) => <li key={f}>{f}</li>)}
+              {p.features.map((f) => (
+                <li key={f}>{f}</li>
+              ))}
             </ul>
           </div>
         ))}
       </div>
     </section>
-  )
+  );
 }
 
 /* ── How It Works ────────────────────────────────────────────────────── */
@@ -86,7 +96,9 @@ function HowItWorks() {
     <section className="how" id="how">
       <SectionLabel>How It Works</SectionLabel>
       <SectionTitle>
-        From draft to registry-ready<br />in minutes
+        From draft to registry-ready
+        <br />
+        in minutes
       </SectionTitle>
 
       <div className="how__steps">
@@ -106,31 +118,30 @@ function HowItWorks() {
           <span className="how__demo-badge">Reviewing</span>
         </div>
         {[
-          ['Forum',       'NCLT, Delhi Bench'],
-          ['Act',         'Insolvency & Bankruptcy Code, 2016'],
+          ['Forum', 'NCLT, Delhi Bench'],
+          ['Act', 'Insolvency & Bankruptcy Code, 2016'],
           ['Filing type', 'Appeal u/s 61(1) IBC'],
-          ['Pagination',  'Checking index & annexures…'],
+          ['Pagination', 'Checking index & annexures…'],
         ].map(([label, val]) => (
           <div className="how__demo-row" key={label}>
             <span className="how__demo-row-label">{label}</span>
             <span className="how__demo-row-val">{val}</span>
           </div>
         ))}
-        <div className="how__demo-alert">
-          ⚠ Defect: Missing certified copy — Exhibit C
-        </div>
+        <div className="how__demo-alert">⚠ Defect: Missing certified copy — Exhibit C</div>
         <div className="how__demo-score">
           <div className="how__demo-circle">
             <span>82</span>
           </div>
           <p>
-            <strong>Compliance Score: 82/100</strong><br />
-            1 defect found — attach certified copy of impugned order as Exhibit C before submission.
+            <strong>Compliance Score: 82/100</strong>
+            <br />1 defect found — attach certified copy of impugned order as Exhibit C before
+            submission.
           </p>
         </div>
       </div>
     </section>
-  )
+  );
 }
 
 /* ── Audience ────────────────────────────────────────────────────────── */
@@ -145,18 +156,22 @@ function Audience() {
       <div className="audience__grid">
         {AUDIENCE.map(({ icon, title, role, body, features }) => (
           <div className="audience-card" key={title}>
-            <span className="audience-card__icon" role="img" aria-hidden="true">{icon}</span>
+            <span className="audience-card__icon" role="img" aria-hidden="true">
+              {icon}
+            </span>
             <h3>{title}</h3>
             <p className="audience-card__role">{role}</p>
             <p className="audience-card__body">{body}</p>
             <ul className="audience-card__features">
-              {features.map((f) => <li key={f}>{f}</li>)}
+              {features.map((f) => (
+                <li key={f}>{f}</li>
+              ))}
             </ul>
           </div>
         ))}
       </div>
     </section>
-  )
+  );
 }
 
 /* ── Testimonials ────────────────────────────────────────────────────── */
@@ -184,7 +199,7 @@ function Testimonials() {
         ))}
       </div>
     </section>
-  )
+  );
 }
 
 /* ── Pricing ─────────────────────────────────────────────────────────── */
@@ -206,14 +221,18 @@ function Pricing() {
             </p>
             <p className="pricing-card__desc">{desc}</p>
             <ul className="pricing-card__features">
-              {features.map((f) => <li key={f}>{f}</li>)}
+              {features.map((f) => (
+                <li key={f}>{f}</li>
+              ))}
             </ul>
-            <a href="#access" className="pricing-card__btn">{cta}</a>
+            <a href="#access" className="pricing-card__btn">
+              {cta}
+            </a>
           </div>
         ))}
       </div>
     </section>
-  )
+  );
 }
 
 /* ── Main export ─────────────────────────────────────────────────────── */
@@ -227,5 +246,5 @@ export default function Main() {
       <Testimonials />
       <Pricing />
     </main>
-  )
+  );
 }

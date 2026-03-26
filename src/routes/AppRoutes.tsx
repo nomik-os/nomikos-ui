@@ -1,8 +1,8 @@
-import { Routes, Route } from "react-router-dom";
-import HomePage from "../pages/HomePage.tsx";
-import AuthPage from "../pages/AuthPage.tsx";
-import AuthCallback from "../pages/AuthCallback.tsx";
-import AuthSuccess from "../pages/AuthSuccess.tsx";
+import { Routes, Route } from 'react-router-dom';
+import HomePage from '../pages/HomePage.tsx';
+import AuthPage from '../pages/AuthPage.tsx';
+import AuthCallback from '../pages/AuthCallback.tsx';
+import AuthSuccess from '../pages/AuthSuccess.tsx';
 
 const AppRoutes = () => {
   return (
