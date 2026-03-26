@@ -1,5 +1,5 @@
-import { HERO_STATS } from '../data/content'
-import "../styles/Hero.css";
+import { HERO_STATS } from '../data/content';
+import '../styles/Hero.css';
 
 export default function Hero() {
   return (
@@ -14,13 +14,17 @@ export default function Hero() {
         </h1>
 
         <p className="hero__sub">
-          The AI layer between your draft and the court registry.
-          Built for every forum. Every bench. Zero defects.
+          The AI layer between your draft and the court registry. Built for every forum. Every
+          bench. Zero defects.
         </p>
 
         <div className="hero__actions">
-          <a href="#access" className="btn btn--primary">Login/Signup →</a>
-          <a href="#suite"  className="btn btn--ghost">Explore Products</a>
+          <a href="#access" className="btn btn--primary">
+            Login/Signup →
+          </a>
+          <a href="#suite" className="btn btn--ghost">
+            Explore Products
+          </a>
         </div>
       </div>
 
@@ -37,8 +41,10 @@ export default function Hero() {
           ))}
         </div>
 
-        <span className="hero__deco" aria-hidden="true">§</span>
+        <span className="hero__deco" aria-hidden="true">
+          §
+        </span>
       </div>
     </section>
-  )
+  );
 }

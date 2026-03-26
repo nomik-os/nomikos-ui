@@ -1,13 +1,13 @@
-import { useEffect } from 'react'
-import { useNavigate } from 'react-router-dom'
+import { useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
 
 const AuthSuccess = () => {
-  const navigate = useNavigate()
+  const navigate = useNavigate();
 
   useEffect(() => {
-    const timer = setTimeout(() => navigate('/'), 3000)
-    return () => clearTimeout(timer)
-  }, [navigate])
+    const timer = setTimeout(() => navigate('/'), 3000);
+    return () => clearTimeout(timer);
+  }, [navigate]);
 
   return (
     <div className="auth">
@@ -17,7 +17,9 @@ const AuthSuccess = () => {
             Nomikos<span className="auth__brand-dot">.</span>
           </a>
           <blockquote className="auth__quote">
-            "Precision in filing.<br />Confidence in compliance."
+            "Precision in filing.
+            <br />
+            Confidence in compliance."
           </blockquote>
           <div className="auth__side-stats">
             <div className="auth__stat">
@@ -46,7 +48,9 @@ const AuthSuccess = () => {
               />
             </svg>
           </div>
-          <h1 className="auth__title" style={{ marginTop: '1.5rem' }}>Sign In Completed</h1>
+          <h1 className="auth__title" style={{ marginTop: '1.5rem' }}>
+            Sign In Completed
+          </h1>
           <p className="auth__subtitle" style={{ marginTop: '0.5rem' }}>
             Welcome to Nomikos. Redirecting you shortly…
           </p>
@@ -57,20 +61,22 @@ const AuthSuccess = () => {
           >
             Go to Dashboard
           </button>
-          <p style={{
-            fontFamily: 'var(--mono)',
-            fontSize: '0.68rem',
-            letterSpacing: '0.06em',
-            color: 'var(--muted)',
-            marginTop: '1.25rem',
-            textTransform: 'uppercase',
-          }}>
+          <p
+            style={{
+              fontFamily: 'var(--mono)',
+              fontSize: '0.68rem',
+              letterSpacing: '0.06em',
+              color: 'var(--muted)',
+              marginTop: '1.25rem',
+              textTransform: 'uppercase',
+            }}
+          >
             Redirecting in 3 seconds…
           </p>
         </div>
       </div>
     </div>
-  )
-}
+  );
+};
 
-export default AuthSuccess
+export default AuthSuccess;

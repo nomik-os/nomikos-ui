@@ -1,18 +1,18 @@
-import { useState, useEffect } from 'react'
-import { useNavigate } from "react-router-dom";
-import { NAV_LINKS } from '../data/content'
-import "../styles/Navbar.css";
+import { useState, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
+import { NAV_LINKS } from '../data/content';
+import '../styles/Navbar.css';
 
 export default function Navbar() {
-  const [scrolled, setScrolled] = useState(false)
-  const [menuOpen, setMenuOpen] = useState(false)
+  const [scrolled, setScrolled] = useState(false);
+  const [menuOpen, setMenuOpen] = useState(false);
   const navigate = useNavigate();
 
   useEffect(() => {
-    const onScroll = () => setScrolled(window.scrollY > 40)
-    window.addEventListener('scroll', onScroll, { passive: true })
-    return () => window.removeEventListener('scroll', onScroll)
-  }, [])
+    const onScroll = () => setScrolled(window.scrollY > 40);
+    window.addEventListener('scroll', onScroll, { passive: true });
+    return () => window.removeEventListener('scroll', onScroll);
+  }, []);
 
   return (
     <nav className={`navbar ${scrolled ? 'navbar--scrolled' : ''}`}>
@@ -23,25 +23,26 @@ export default function Navbar() {
       <ul className={`navbar__links ${menuOpen ? 'navbar__links--open' : ''}`}>
         {NAV_LINKS.map(({ label, href }) => (
           <li key={href}>
-            <a href={href} onClick={() => setMenuOpen(false)}>{label}</a>
+            <a href={href} onClick={() => setMenuOpen(false)}>
+              {label}
+            </a>
           </li>
         ))}
       </ul>
 
-      <button 
-        className="navbar__cta"
-        onClick={() => navigate("/auth")}
-      >
+      <button className="navbar__cta" onClick={() => navigate('/auth')}>
         Login / Signup
       </button>
 
       <button
         className={`navbar__burger ${menuOpen ? 'navbar__burger--open' : ''}`}
-        onClick={() => setMenuOpen(o => !o)}
+        onClick={() => setMenuOpen((o) => !o)}
         aria-label="Toggle menu"
       >
-        <span /><span /><span />
+        <span />
+        <span />
+        <span />
       </button>
     </nav>
-  )
+  );
 }

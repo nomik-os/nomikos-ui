@@ -1,15 +1,15 @@
-import { useState } from 'react'
-import { NAV_LINKS } from '../data/content'
-import "../styles/Footer.css";
+import { useState } from 'react';
+import { NAV_LINKS } from '../data/content';
+import '../styles/Footer.css';
 
 export default function Footer() {
-  const [email, setEmail] = useState('')
-  const [submitted, setSubmitted] = useState(false)
+  const [email, setEmail] = useState('');
+  const [submitted, setSubmitted] = useState(false);
 
   const handleSubmit = (e: React.FormEvent) => {
-    e.preventDefault()
-    if (email.trim()) setSubmitted(true)
-  }
+    e.preventDefault();
+    if (email.trim()) setSubmitted(true);
+  };
 
   return (
     <>
@@ -19,11 +19,14 @@ export default function Footer() {
 
         <p className="cta__label">Early Access</p>
         <h2 className="cta__title">
-          Be among the first<br />to file without fear
+          Be among the first
+          <br />
+          to file without fear
         </h2>
         <p className="cta__sub">
           We're onboarding a limited cohort of legal professionals for early access.
-          <br />Join now and help shape the platform that changes how India files.
+          <br />
+          Join now and help shape the platform that changes how India files.
         </p>
 
         {submitted ? (
@@ -38,10 +41,12 @@ export default function Footer() {
               className="cta__input"
               placeholder="Your professional email address"
               value={email}
-              onChange={e => setEmail(e.target.value)}
+              onChange={(e) => setEmail(e.target.value)}
               required
             />
-            <button type="submit" className="cta__submit">Get Access</button>
+            <button type="submit" className="cta__submit">
+              Get Access
+            </button>
           </form>
         )}
 
@@ -64,13 +69,17 @@ export default function Footer() {
                 <a href={href}>{label}</a>
               </li>
             ))}
-            <li><a href="#access">Early Access</a></li>
-            <li><a href="#">Privacy Policy</a></li>
+            <li>
+              <a href="#access">Early Access</a>
+            </li>
+            <li>
+              <a href="#">Privacy Policy</a>
+            </li>
           </ul>
         </nav>
 
         <p className="footer__copy">© 2025 Nomikos. All rights reserved.</p>
       </footer>
     </>
-  )
+  );
 }

@@ -1,10 +1,14 @@
-import { useLocation } from "react-router-dom";
-import Navbar from "./components/Navbar";
-import AppRoutes from "./routes/AppRoutes";
+import { useLocation } from 'react-router-dom';
+import Navbar from './components/Navbar';
+import AppRoutes from './routes/AppRoutes';
+import logger from './utils/logger';
+
+logger.info('Application starting');
 
 export default function App() {
   const location = useLocation();
-  const hideNavbar = location.pathname.startsWith("/auth");
+  const hideNavbar = location.pathname.startsWith('/auth');
+  logger.debug(`Current path: ${location.pathname}`);
 
   return (
     <>

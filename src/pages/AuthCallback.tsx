@@ -1,58 +1,62 @@
-import { useEffect, useState } from 'react'
-import { useNavigate } from 'react-router-dom'
-import { supabase } from '../lib/supabaseClient'
+import { useEffect, useState } from 'react';
+import { useNavigate } from 'react-router-dom';
+import { supabase } from '../lib/supabaseClient';
 
 const AuthCallback = () => {
-  const navigate = useNavigate()
-  const [error, setError] = useState<string | null>(null)
+  const navigate = useNavigate();
+  const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
     const handleCallback = async () => {
       // Supabase automatically picks up tokens from the URL hash
       // when getSession is called
-      const { data, error } = await supabase.auth.getSession()
+      const { data, error } = await supabase.auth.getSession();
 
       if (error) {
-        setError(error.message)
-        return
+        setError(error.message);
+        return;
       }
 
       if (data.session) {
-        navigate('/auth/success')
-        return
+        navigate('/auth/success');
+        return;
       }
 
       // Fallback: listen for auth state change (for OAuth flows)
-      const { data: { subscription } } = supabase.auth.onAuthStateChange((event) => {
+      const {
+        data: { subscription },
+      } = supabase.auth.onAuthStateChange((event) => {
         if (event === 'SIGNED_IN' || event === 'PASSWORD_RECOVERY') {
-          navigate('/auth/success')
+          navigate('/auth/success');
         }
-      })
+      });
 
       // Cleanup + timeout fallback
       setTimeout(() => {
-        subscription.unsubscribe()
-        setError('Authentication timed out. Please try again.')
-      }, 10000)
-    }
+        subscription.unsubscribe();
+        setError('Authentication timed out. Please try again.');
+      }, 10000);
+    };
 
-    handleCallback()
-  }, [navigate])
+    handleCallback();
+  }, [navigate]);
 
   return (
-    <div style={{
-      display: 'flex',
-      flexDirection: 'column' as const,
-      alignItems: 'center',
-      justifyContent: 'center',
-      height: '100vh',
-      fontFamily: 'var(--mono)',
-      fontSize: '0.8rem',
-      letterSpacing: '0.06em',
-      textTransform: 'uppercase' as const,
-      color: 'var(--muted)',
-      gap: '1rem',
-    }}>
+    <div
+      style={{
+        display: 'flex',
+        flexDirection: 'column' as const,
+        alignItems: 'center',
+        justifyContent: 'center',
+        height: '100vh',
+        fontFamily: 'var(--mono)',
+        fontSize: '0.8rem',
+        letterSpacing: '0.06em',
+        textTransform: 'uppercase' as const,
+        color: 'var(--muted)',
+        gap: '1rem',
+      }}
+    >
       {error ? (
         <>
           <span style={{ color: 'var(--rust)' }}>{error}</span>
@@ -75,7 +79,7 @@ const AuthCallback = () => {
         'Authenticating…'
       )}
     </div>
-  )
-}
+  );
+};
 
-export default AuthCallback
+export default AuthCallback;
