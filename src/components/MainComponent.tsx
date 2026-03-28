@@ -1,14 +1,13 @@
 import {
-  PROBLEM_STATS,
-  PRODUCTS,
-  HOW_STEPS,
-  AUDIENCE,
-  TESTIMONIALS,
-  PRICING,
-} from '../data/content';
+  useProblemStats,
+  useProducts,
+  useHowSteps,
+  useAudience,
+  useTestimonials,
+  usePricing,
+} from '../context/ContentContext';
 import '../styles/MainComponent.css';
 
-/* ── Shared primitives ───────────────────────────────────────────────── */
 function SectionLabel({ children }: { children: React.ReactNode }) {
   return <p className="section-label">{children}</p>;
 }
@@ -17,8 +16,7 @@ function SectionTitle({ children }: { children: React.ReactNode }) {
   return <h2 className="section-title">{children}</h2>;
 }
 
-/* ── Problem ─────────────────────────────────────────────────────────── */
-function Problem() {
+function Problem({ problemStats }: { problemStats: ReturnType<typeof useProblemStats> }) {
   return (
     <section className="problem" id="problem">
       <div className="problem__left">
@@ -42,7 +40,7 @@ function Problem() {
       </div>
 
       <div className="problem__stats">
-        {PROBLEM_STATS.map(({ num, title, sub }) => (
+        {problemStats.map(({ num, title, sub }) => (
           <div className="problem__stat" key={num}>
             <span className="problem__stat-num">{num}</span>
             <div className="problem__stat-text">
@@ -56,8 +54,7 @@ function Problem() {
   );
 }
 
-/* ── Products ────────────────────────────────────────────────────────── */
-function Products() {
+function Products({ products }: { products: ReturnType<typeof useProducts> }) {
   return (
     <section className="products" id="suite">
       <header className="products__header">
@@ -70,7 +67,7 @@ function Products() {
       </header>
 
       <div className="products__grid">
-        {PRODUCTS.map((p) => (
+        {products.map((p) => (
           <div className="product-card" key={p.title}>
             <span className={`product-card__tag product-card__tag--${p.tagVariant}`}>{p.tag}</span>
             <span className="product-card__icon" role="img" aria-hidden="true">
@@ -90,8 +87,7 @@ function Products() {
   );
 }
 
-/* ── How It Works ────────────────────────────────────────────────────── */
-function HowItWorks() {
+function HowItWorks({ howSteps }: { howSteps: ReturnType<typeof useHowSteps> }) {
   return (
     <section className="how" id="how">
       <SectionLabel>How It Works</SectionLabel>
@@ -102,7 +98,7 @@ function HowItWorks() {
       </SectionTitle>
 
       <div className="how__steps">
-        {HOW_STEPS.map(({ num, title, body }) => (
+        {howSteps.map(({ num, title, body }) => (
           <div className="how__step" key={num}>
             <div className="how__step-num">{num}</div>
             <h3>{title}</h3>
@@ -111,7 +107,6 @@ function HowItWorks() {
         ))}
       </div>
 
-      {/* Live demo card */}
       <div className="how__demo">
         <div className="how__demo-header">
           <span>NCLT Delhi — IBC Appeal</span>
@@ -144,8 +139,7 @@ function HowItWorks() {
   );
 }
 
-/* ── Audience ────────────────────────────────────────────────────────── */
-function Audience() {
+function Audience({ audience }: { audience: ReturnType<typeof useAudience> }) {
   return (
     <section className="audience" id="audience">
       <header className="audience__header">
@@ -154,7 +148,7 @@ function Audience() {
       </header>
 
       <div className="audience__grid">
-        {AUDIENCE.map(({ icon, title, role, body, features }) => (
+        {audience.map(({ icon, title, role, body, features }) => (
           <div className="audience-card" key={title}>
             <span className="audience-card__icon" role="img" aria-hidden="true">
               {icon}
@@ -174,8 +168,7 @@ function Audience() {
   );
 }
 
-/* ── Testimonials ────────────────────────────────────────────────────── */
-function Testimonials() {
+function Testimonials({ testimonials }: { testimonials: ReturnType<typeof useTestimonials> }) {
   return (
     <section className="testimonials" id="testimonials">
       <header className="testimonials__header">
@@ -184,7 +177,7 @@ function Testimonials() {
       </header>
 
       <div className="testimonials__grid">
-        {TESTIMONIALS.map(({ initials, quote, name, role }) => (
+        {testimonials.map(({ initials, quote, name, role }) => (
           <div className="testimonial-card" key={name}>
             <div className="testimonial-card__stars">★★★★★</div>
             <blockquote>{quote}</blockquote>
@@ -202,8 +195,7 @@ function Testimonials() {
   );
 }
 
-/* ── Pricing ─────────────────────────────────────────────────────────── */
-function Pricing() {
+function Pricing({ pricing }: { pricing: ReturnType<typeof usePricing> }) {
   return (
     <section className="pricing" id="pricing">
       <header className="pricing__header">
@@ -212,7 +204,7 @@ function Pricing() {
       </header>
 
       <div className="pricing__grid">
-        {PRICING.map(({ tier, amount, period, desc, features, cta, featured }) => (
+        {pricing.map(({ tier, amount, period, desc, features, cta, featured }) => (
           <div className={`pricing-card ${featured ? 'pricing-card--featured' : ''}`} key={tier}>
             {featured && <div className="pricing-card__badge">Most Popular</div>}
             <p className="pricing-card__tier">{tier}</p>
@@ -235,16 +227,22 @@ function Pricing() {
   );
 }
 
-/* ── Main export ─────────────────────────────────────────────────────── */
 export default function Main() {
+  const problemStats = useProblemStats();
+  const products = useProducts();
+  const howSteps = useHowSteps();
+  const audience = useAudience();
+  const testimonials = useTestimonials();
+  const pricing = usePricing();
+
   return (
     <main>
-      <Problem />
-      <Products />
-      <HowItWorks />
-      <Audience />
-      <Testimonials />
-      <Pricing />
+      <Problem problemStats={problemStats} />
+      <Products products={products} />
+      <HowItWorks howSteps={howSteps} />
+      <Audience audience={audience} />
+      <Testimonials testimonials={testimonials} />
+      <Pricing pricing={pricing} />
     </main>
   );
 }

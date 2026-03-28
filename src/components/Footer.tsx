@@ -1,10 +1,11 @@
 import { useState } from 'react';
-import { NAV_LINKS } from '../data/content';
+import { useNavLinks } from '../context/ContentContext';
 import '../styles/Footer.css';
 
 export default function Footer() {
   const [email, setEmail] = useState('');
   const [submitted, setSubmitted] = useState(false);
+  const navLinks = useNavLinks();
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
@@ -64,7 +65,7 @@ export default function Footer() {
 
         <nav className="footer__nav" aria-label="Footer navigation">
           <ul>
-            {NAV_LINKS.map(({ label, href }) => (
+            {navLinks.map(({ label, href }) => (
               <li key={href}>
                 <a href={href}>{label}</a>
               </li>
