@@ -1,11 +1,12 @@
 import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { NAV_LINKS } from '../data/content';
+import { useNavLinks } from '../context/ContentContext';
 import '../styles/Navbar.css';
 
 export default function Navbar() {
   const [scrolled, setScrolled] = useState(false);
   const [menuOpen, setMenuOpen] = useState(false);
+  const navLinks = useNavLinks();
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -21,7 +22,7 @@ export default function Navbar() {
       </a>
 
       <ul className={`navbar__links ${menuOpen ? 'navbar__links--open' : ''}`}>
-        {NAV_LINKS.map(({ label, href }) => (
+        {navLinks.map(({ label, href }) => (
           <li key={href}>
             <a href={href} onClick={() => setMenuOpen(false)}>
               {label}

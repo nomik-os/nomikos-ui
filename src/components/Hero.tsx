@@ -1,7 +1,9 @@
-import { HERO_STATS } from '../data/content';
+import { useHeroStats } from '../context/ContentContext';
 import '../styles/Hero.css';
 
 export default function Hero() {
+  const heroStats = useHeroStats();
+
   return (
     <section className="hero">
       {/* ── Left: headline + CTAs ── */}
@@ -33,7 +35,7 @@ export default function Hero() {
         <p className="hero__right-label">The scale of the problem</p>
 
         <div className="hero__stats">
-          {HERO_STATS.map(({ num, label }) => (
+          {heroStats.map(({ num, label }) => (
             <div className="hero__stat" key={num}>
               <span className="hero__stat-num">{num}</span>
               <span className="hero__stat-label">{label}</span>
