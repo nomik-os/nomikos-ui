@@ -1,4 +1,5 @@
 import { useState, useRef } from 'react';
+import { documentApi } from '../services/documentApi';
 import Select from '../components/Select';
 import '../styles/UserOptions.css';
 
@@ -150,9 +151,12 @@ export default function UserOptions() {
   const handleUpload = async () => {
     if (!file) return;
     setUploadStatus('uploading');
-    setTimeout(() => {
+    try {
+      await documentApi.uploadDocument(file);
       setUploadStatus('success');
-    }, 1500);
+    } catch {
+      setUploadStatus('error');
+    }
   };
 
   const showVettingFlow = form.assistance_type === 'vetting_of_draft';
@@ -349,6 +353,11 @@ export default function UserOptions() {
 
               {uploadStatus === 'success' && (
                 <p className="options__upload-success">Document uploaded successfully!</p>
+              )}
+              {uploadStatus === 'error' && (
+                <p className="options__upload-error">
+                  Failed to upload document. Please try again.
+                </p>
               )}
             </section>
           )}
