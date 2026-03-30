@@ -1,46 +1,11 @@
 import express from 'express';
 import cors from 'cors';
 import { PDFDocument } from 'pdf-lib';
-import { S3Client, PutObjectCommand } from '@aws-sdk/client-s3';
 
 const app = express();
 const PORT = 3001;
 
 app.use(cors());
-
-// ── R2 Config ──
-const R2_ACCOUNT_ID = process.env.R2_ACCOUNT_ID || '54cd3025809f1236231df961a17bee09';
-const R2_ACCESS_KEY_ID = process.env.R2_ACCESS_KEY_ID || '';
-const R2_SECRET_ACCESS_KEY = process.env.R2_SECRET_ACCESS_KEY || '';
-const R2_BUCKET_NAME = process.env.R2_BUCKET_NAME || 'nomikos-documents';
-const R2_PUBLIC_URL = process.env.R2_PUBLIC_URL || 'https://pub-0bda3108aed14bf8a9fbdddedb544014.r2.dev';
-
-const r2Client = new S3Client({
-  region: 'auto',
-  endpoint: `https://${R2_ACCOUNT_ID}.r2.cloudflarestorage.com`,
-  credentials: {
-    accessKeyId: R2_ACCESS_KEY_ID,
-    secretAccessKey: R2_SECRET_ACCESS_KEY,
-  },
-});
-
-async function uploadToR2(key, body, contentType) {
-  if (!R2_ACCESS_KEY_ID) {
-    console.log(`  [r2-skip] No R2 credentials, skipping upload for ${key}`);
-    return `${R2_PUBLIC_URL}/${key}`;
-  }
-  await r2Client.send(
-    new PutObjectCommand({
-      Bucket: R2_BUCKET_NAME,
-      Key: key,
-      Body: body,
-      ContentType: contentType,
-    })
-  );
-  const url = `${R2_PUBLIC_URL}/${key}`;
-  console.log(`  [r2] Uploaded: ${url}`);
-  return url;
-}
 
 // Parse raw multipart manually
 function parseMultipart(req) {
@@ -101,24 +66,15 @@ app.post('/api/upload', async (req, res) => {
       return res.status(400).json({ success: false, error: 'No files uploaded' });
     }
 
-    const uploaded = [];
-    for (const f of files) {
-      const timestamp = Date.now();
-      const safeName = f.name.replace(/[^a-zA-Z0-9._-]/g, '_');
-      const key = `uploads/${timestamp}_${safeName}`;
-      const url = await uploadToR2(key, f.buffer, f.type);
+    const uploaded = files.map((f) => ({
+      filename: f.name,
+      originalName: f.name,
+      mimetype: f.type,
+      size: f.buffer.length,
+      path: f.name,
+    }));
 
-      uploaded.push({
-        filename: key,
-        originalName: f.name,
-        mimetype: f.type,
-        size: f.buffer.length,
-        path: key,
-        url,
-      });
-    }
-
-    console.log(`[upload] ${uploaded.length} file(s) uploaded`);
+    console.log(`[upload] ${uploaded.length} file(s) received:`, uploaded.map(f => `${f.filename} (${f.size} bytes)`));
     return res.json({ success: true, data: uploaded.length === 1 ? uploaded[0] : uploaded });
   } catch (err) {
     console.error('[upload] Error:', err.message);
@@ -134,24 +90,15 @@ app.post('/api/upload-multiple', async (req, res) => {
       return res.status(400).json({ success: false, error: 'No files uploaded' });
     }
 
-    const uploaded = [];
-    for (const f of files) {
-      const timestamp = Date.now();
-      const safeName = f.name.replace(/[^a-zA-Z0-9._-]/g, '_');
-      const key = `uploads/${timestamp}_${safeName}`;
-      const url = await uploadToR2(key, f.buffer, f.type);
+    const uploaded = files.map((f) => ({
+      filename: f.name,
+      originalName: f.name,
+      mimetype: f.type,
+      size: f.buffer.length,
+      path: f.name,
+    }));
 
-      uploaded.push({
-        filename: key,
-        originalName: f.name,
-        mimetype: f.type,
-        size: f.buffer.length,
-        path: key,
-        url,
-      });
-    }
-
-    console.log(`[upload-multiple] ${uploaded.length} file(s) uploaded`);
+    console.log(`[upload-multiple] ${uploaded.length} file(s) received`);
     return res.json({ success: true, data: uploaded });
   } catch (err) {
     console.error('[upload-multiple] Error:', err.message);
@@ -169,13 +116,6 @@ app.post('/api/merge', async (req, res) => {
     }
 
     console.log(`[merge] Merging ${files.length} files:`, files.map(f => f.name));
-
-    // Upload originals to R2
-    for (const file of files) {
-      const timestamp = Date.now();
-      const safeName = file.name.replace(/[^a-zA-Z0-9._-]/g, '_');
-      await uploadToR2(`originals/${timestamp}_${safeName}`, file.buffer, file.type);
-    }
 
     const mergedPdf = await PDFDocument.create();
 
@@ -235,19 +175,13 @@ app.post('/api/merge', async (req, res) => {
     const mergedBytes = await mergedPdf.save();
     const mergedBuffer = Buffer.from(mergedBytes);
 
-    // Upload merged PDF to R2
-    const timestamp = Date.now();
-    const mergedKey = `merged/${timestamp}_merged_${totalPages}pages.pdf`;
-    const mergedUrl = await uploadToR2(mergedKey, mergedBuffer, 'application/pdf');
-
-    console.log(`[merge] Done: ${totalPages} pages, ${mergedBuffer.length} bytes, R2: ${mergedUrl}`);
+    console.log(`[merge] Done: ${totalPages} total pages, ${mergedBuffer.length} bytes`);
 
     res.setHeader('Content-Type', 'application/pdf');
     res.setHeader('Content-Disposition', `attachment; filename="merged_${totalPages}pages.pdf"`);
     res.setHeader('Content-Length', mergedBuffer.length);
     res.setHeader('X-Total-Pages', String(totalPages));
-    res.setHeader('X-R2-Url', mergedUrl);
-    res.setHeader('Access-Control-Expose-Headers', 'X-Total-Pages, X-R2-Url');
+    res.setHeader('Access-Control-Expose-Headers', 'X-Total-Pages');
 
     return res.status(200).send(mergedBuffer);
   } catch (err) {
@@ -258,6 +192,4 @@ app.post('/api/merge', async (req, res) => {
 
 app.listen(PORT, () => {
   console.log(`API server running on http://localhost:${PORT}`);
-  console.log(`R2 bucket: ${R2_BUCKET_NAME}`);
-  console.log(`R2 credentials: ${R2_ACCESS_KEY_ID ? 'configured' : 'NOT SET — uploads will be skipped'}`);
 });

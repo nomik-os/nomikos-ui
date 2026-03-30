@@ -1,6 +1,5 @@
 import type { VercelRequest, VercelResponse } from '@vercel/node';
 import { PDFDocument } from 'pdf-lib';
-import { uploadToR2 } from './_r2';
 
 export const config = {
   api: {
@@ -132,13 +131,6 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
       return res.status(400).json({ success: false, error: 'At least 2 files required for merging' });
     }
 
-    // Upload originals to R2
-    for (const file of files) {
-      const timestamp = Date.now();
-      const safeName = file.name.replace(/[^a-zA-Z0-9._-]/g, '_');
-      await uploadToR2(`originals/${timestamp}_${safeName}`, file.buffer, file.type);
-    }
-
     const mergedPdf = await PDFDocument.create();
 
     for (const file of files) {
@@ -151,6 +143,7 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
       } else if (isText(file.type, file.name)) {
         embedText(mergedPdf, file.buffer);
       } else {
+        // Unsupported format — add info page
         const page = mergedPdf.addPage([595.28, 841.89]);
         page.drawText(`Document: ${file.name}`, { x: 50, y: 750, size: 14 });
         page.drawText(`Format: ${file.type}`, { x: 50, y: 720, size: 11 });
@@ -162,18 +155,11 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
     const mergedBytes = await mergedPdf.save();
     const mergedBuffer = Buffer.from(mergedBytes);
 
-    // Upload merged PDF to R2
-    const timestamp = Date.now();
-    const mergedKey = `merged/${timestamp}_merged_${totalPages}pages.pdf`;
-    const mergedUrl = await uploadToR2(mergedKey, mergedBuffer, 'application/pdf');
-
-    // Return the merged PDF as download + store URL in header
+    // Return the merged PDF directly as a download
     res.setHeader('Content-Type', 'application/pdf');
     res.setHeader('Content-Disposition', `attachment; filename="merged_${totalPages}pages.pdf"`);
     res.setHeader('Content-Length', mergedBuffer.length);
     res.setHeader('X-Total-Pages', String(totalPages));
-    res.setHeader('X-R2-Url', mergedUrl);
-    res.setHeader('Access-Control-Expose-Headers', 'X-Total-Pages, X-R2-Url');
 
     return res.status(200).send(mergedBuffer);
   } catch (err: unknown) {
