@@ -1,4 +1,5 @@
 import type { VercelRequest, VercelResponse } from '@vercel/node';
+import { uploadToR2 } from './_r2';
 
 export const config = {
   api: {
@@ -75,13 +76,23 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
       return res.status(400).json({ success: false, error: 'No files uploaded' });
     }
 
-    const uploaded = files.map((f) => ({
-      filename: f.name,
-      originalName: f.name,
-      mimetype: f.type,
-      size: f.buffer.length,
-      path: f.name,
-    }));
+    const uploaded = [];
+
+    for (const f of files) {
+      const timestamp = Date.now();
+      const safeName = f.name.replace(/[^a-zA-Z0-9._-]/g, '_');
+      const key = `uploads/${timestamp}_${safeName}`;
+      const url = await uploadToR2(key, f.buffer, f.type);
+
+      uploaded.push({
+        filename: key,
+        originalName: f.name,
+        mimetype: f.type,
+        size: f.buffer.length,
+        path: key,
+        url,
+      });
+    }
 
     return res.status(200).json({
       success: true,
