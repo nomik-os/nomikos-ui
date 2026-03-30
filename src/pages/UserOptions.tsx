@@ -106,13 +106,10 @@ export default function UserOptions() {
     interlocutory_type: '',
   });
 
-  const [files, setFiles] = useState<File[]>([]);
+  const [file, setFile] = useState<File | null>(null);
   const [uploadStatus, setUploadStatus] = useState<'idle' | 'uploading' | 'success' | 'error'>(
     'idle'
   );
-  const [uploadProgress, setUploadProgress] = useState(0);
-  const [dragOver, setDragOver] = useState(false);
-  const [dragIndex, setDragIndex] = useState<number | null>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
 
   const update = (key: keyof FormState, value: string) => {
@@ -143,120 +140,19 @@ export default function UserOptions() {
     });
   };
 
-  const ACCEPTED_TYPES = [
-    'application/pdf',
-    'application/msword',
-    'application/vnd.openxmlformats-officedocument.wordprocessingml.document',
-    'application/vnd.ms-excel',
-    'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
-    'application/vnd.ms-powerpoint',
-    'application/vnd.openxmlformats-officedocument.presentationml.presentation',
-    'image/png',
-    'image/jpeg',
-    'image/jpg',
-    'image/webp',
-    'text/plain',
-    'text/csv',
-  ];
-
-  const ACCEPTED_EXTENSIONS =
-    '.pdf,.doc,.docx,.xls,.xlsx,.ppt,.pptx,.png,.jpg,.jpeg,.webp,.txt,.csv';
-
-  const isValidFile = (file: File) => {
-    return ACCEPTED_TYPES.includes(file.type) || ACCEPTED_EXTENSIONS.split(',').some((ext) => file.name.toLowerCase().endsWith(ext));
-  };
-
-  const addFiles = (newFiles: FileList | File[]) => {
-    const validFiles = Array.from(newFiles).filter(isValidFile);
-    if (validFiles.length === 0) return;
-    setFiles((prev) => [...prev, ...validFiles]);
-    setUploadStatus('idle');
-    setUploadProgress(0);
-  };
-
-  const removeFile = (index: number) => {
-    setFiles((prev) => prev.filter((_, i) => i !== index));
-    setUploadStatus('idle');
-  };
-
-  const moveFile = (from: number, to: number) => {
-    setFiles((prev) => {
-      const next = [...prev];
-      const [moved] = next.splice(from, 1);
-      next.splice(to, 0, moved);
-      return next;
-    });
-  };
-
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    if (e.target.files) {
-      addFiles(e.target.files);
-      e.target.value = '';
+    const selectedFile = e.target.files?.[0];
+    if (selectedFile) {
+      setFile(selectedFile);
+      setUploadStatus('idle');
     }
-  };
-
-  const handleDrop = (e: React.DragEvent) => {
-    e.preventDefault();
-    setDragOver(false);
-    if (e.dataTransfer.files.length > 0) {
-      addFiles(e.dataTransfer.files);
-    }
-  };
-
-  const handleDragOver = (e: React.DragEvent) => {
-    e.preventDefault();
-    setDragOver(true);
-  };
-
-  const handleDragLeave = (e: React.DragEvent) => {
-    e.preventDefault();
-    setDragOver(false);
-  };
-
-  const handleFileDragStart = (index: number) => {
-    setDragIndex(index);
-  };
-
-  const handleFileDragOver = (e: React.DragEvent, index: number) => {
-    e.preventDefault();
-    if (dragIndex !== null && dragIndex !== index) {
-      moveFile(dragIndex, index);
-      setDragIndex(index);
-    }
-  };
-
-  const handleFileDragEnd = () => {
-    setDragIndex(null);
-  };
-
-  const formatFileSize = (bytes: number) => {
-    if (bytes < 1024) return bytes + ' B';
-    if (bytes < 1024 * 1024) return (bytes / 1024).toFixed(1) + ' KB';
-    return (bytes / (1024 * 1024)).toFixed(1) + ' MB';
-  };
-
-  const getFileIcon = (file: File) => {
-    const ext = file.name.split('.').pop()?.toLowerCase();
-    if (ext === 'pdf') return 'PDF';
-    if (ext === 'doc' || ext === 'docx') return 'DOC';
-    if (ext === 'xls' || ext === 'xlsx') return 'XLS';
-    if (ext === 'ppt' || ext === 'pptx') return 'PPT';
-    if (ext === 'png' || ext === 'jpg' || ext === 'jpeg' || ext === 'webp') return 'IMG';
-    if (ext === 'txt') return 'TXT';
-    if (ext === 'csv') return 'CSV';
-    return 'FILE';
   };
 
   const handleUpload = async () => {
-    if (files.length === 0) return;
+    if (!file) return;
     setUploadStatus('uploading');
-    setUploadProgress(0);
     try {
-      if (files.length === 1) {
-        await documentApi.uploadDocument(files[0]);
-      } else {
-        await documentApi.mergeDocuments(files, setUploadProgress);
-      }
+      await documentApi.uploadDocument(file);
       setUploadStatus('success');
     } catch {
       setUploadStatus('error');
@@ -408,28 +304,18 @@ export default function UserOptions() {
 
           {allFieldsComplete && (
             <section className="options__section options__section--upload">
-              <h2 className="options__section-title">Upload Documents</h2>
+              <h2 className="options__section-title">Upload Document</h2>
               <p className="options__upload-hint">
-                Upload one or multiple files. Multiple files will be merged into a single PDF with
-                sequential page numbering. Drag to reorder.
-              </p>
-              <p className="options__upload-formats">
-                Supported: PDF, DOC, DOCX, XLS, XLSX, PPT, PPTX, PNG, JPG, WEBP, TXT, CSV
+                All fields completed. Upload your draft for vetting.
               </p>
 
-              <div
-                className={`options__upload-area ${dragOver ? 'options__upload-area--dragover' : ''}`}
-                onDrop={handleDrop}
-                onDragOver={handleDragOver}
-                onDragLeave={handleDragLeave}
-              >
+              <div className="options__upload-area">
                 <input
                   ref={fileInputRef}
                   type="file"
                   id="document-upload"
                   className="options__upload-input"
-                  accept={ACCEPTED_EXTENSIONS}
-                  multiple
+                  accept=".pdf,.doc,.docx"
                   onChange={handleFileChange}
                 />
                 <label htmlFor="document-upload" className="options__upload-label">
@@ -446,101 +332,31 @@ export default function UserOptions() {
                     <polyline points="17 8 12 3 7 8" />
                     <line x1="12" y1="3" x2="12" y2="15" />
                   </svg>
-                  <span className="options__upload-text">
-                    Click to select or drag &amp; drop files
-                  </span>
-                  <span className="options__upload-subtext">
-                    Select multiple files at once
-                  </span>
+                  {file ? (
+                    <span className="options__upload-filename">{file.name}</span>
+                  ) : (
+                    <span className="options__upload-text">Click to select or drag & drop</span>
+                  )}
                 </label>
               </div>
 
-              {files.length > 0 && (
-                <>
-                  <div className="options__file-list">
-                    <div className="options__file-list-header">
-                      <span>{files.length} file{files.length !== 1 ? 's' : ''} selected</span>
-                      <button
-                        type="button"
-                        className="options__clear-btn"
-                        onClick={() => {
-                          setFiles([]);
-                          setUploadStatus('idle');
-                        }}
-                      >
-                        Clear all
-                      </button>
-                    </div>
-                    {files.map((f, i) => (
-                      <div
-                        key={`${f.name}-${f.size}-${i}`}
-                        className={`options__file-item ${dragIndex === i ? 'options__file-item--dragging' : ''}`}
-                        draggable
-                        onDragStart={() => handleFileDragStart(i)}
-                        onDragOver={(e) => handleFileDragOver(e, i)}
-                        onDragEnd={handleFileDragEnd}
-                      >
-                        <span className="options__file-order">{i + 1}</span>
-                        <span className="options__file-grip" title="Drag to reorder">⠿</span>
-                        <span className="options__file-type-badge">{getFileIcon(f)}</span>
-                        <div className="options__file-info">
-                          <span className="options__file-name">{f.name}</span>
-                          <span className="options__file-size">{formatFileSize(f.size)}</span>
-                        </div>
-                        <button
-                          type="button"
-                          className="options__file-remove"
-                          onClick={() => removeFile(i)}
-                          title="Remove file"
-                        >
-                          &times;
-                        </button>
-                      </div>
-                    ))}
-                    {files.length > 1 && (
-                      <p className="options__merge-note">
-                        Files will be merged in the order shown above into a single PDF.
-                      </p>
-                    )}
-                  </div>
-
-                  {uploadStatus === 'uploading' && (
-                    <div className="options__progress">
-                      <div className="options__progress-bar">
-                        <div
-                          className="options__progress-fill"
-                          style={{ width: `${uploadProgress}%` }}
-                        />
-                      </div>
-                      <span className="options__progress-text">{uploadProgress}%</span>
-                    </div>
-                  )}
-
-                  <button
-                    type="button"
-                    className="options__btn options__btn--primary"
-                    onClick={handleUpload}
-                    disabled={uploadStatus === 'uploading'}
-                  >
-                    {uploadStatus === 'uploading'
-                      ? 'Processing...'
-                      : files.length > 1
-                        ? `Merge & Upload ${files.length} Files`
-                        : 'Upload Document'}
-                  </button>
-                </>
+              {file && (
+                <button
+                  type="button"
+                  className="options__btn options__btn--primary"
+                  onClick={handleUpload}
+                  disabled={uploadStatus === 'uploading'}
+                >
+                  {uploadStatus === 'uploading' ? 'Uploading...' : 'Upload Document'}
+                </button>
               )}
 
               {uploadStatus === 'success' && (
-                <p className="options__upload-success">
-                  {files.length > 1
-                    ? 'Documents merged and uploaded successfully!'
-                    : 'Document uploaded successfully!'}
-                </p>
+                <p className="options__upload-success">Document uploaded successfully!</p>
               )}
               {uploadStatus === 'error' && (
                 <p className="options__upload-error">
-                  Failed to process documents. Please try again.
+                  Failed to upload document. Please try again.
                 </p>
               )}
             </section>

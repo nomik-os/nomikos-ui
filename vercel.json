@@ -1,8 +1,5 @@
 {
   "rewrites": [
-    { "source": "/api/upload", "destination": "/api/upload" },
-    { "source": "/api/upload-multiple", "destination": "/api/upload" },
-    { "source": "/api/merge", "destination": "/api/merge" },
     { "source": "/(.*)", "destination": "/index.html" }
   ]
 }
