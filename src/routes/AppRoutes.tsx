@@ -4,6 +4,7 @@ import AuthPage from '../pages/AuthPage.tsx';
 import AuthCallback from '../pages/AuthCallback.tsx';
 import AuthSuccess from '../pages/AuthSuccess.tsx';
 import UserOptions from '../pages/UserOptions.tsx';
+import ProtectedRoute from '../components/ProtectedRoute.tsx';
 
 const AppRoutes = () => {
   return (
@@ -12,7 +13,14 @@ const AppRoutes = () => {
       <Route path="/auth" element={<AuthPage />} />
       <Route path="/auth/callback" element={<AuthCallback />} />
       <Route path="/auth/success" element={<AuthSuccess />} />
-      <Route path="/options" element={<UserOptions />} />
+      <Route
+        path="/options"
+        element={
+          <ProtectedRoute>
+            <UserOptions />
+          </ProtectedRoute>
+        }
+      />
     </Routes>
   );
 };
