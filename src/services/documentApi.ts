@@ -36,6 +36,26 @@ export const documentApi = {
     console.log('[documentApi] uploadDocument response:', response.data);
     return response.data.data;
   },
+
+  async uploadDocuments(files: File[]): Promise<UploadedFile[]> {
+    console.log('[documentApi] Calling uploadDocuments...');
+    const formData = new FormData();
+    files.forEach((file) => {
+      formData.append('documents', file);
+    });
+
+    const response = await apiClient.post<{ success: boolean; data: UploadedFile[]; error?: string }>(
+      '/upload/multiple',
+      formData,
+      {
+        headers: {
+          'Content-Type': 'multipart/form-data',
+        },
+      }
+    );
+    console.log('[documentApi] uploadDocuments response:', response.data);
+    return response.data.data;
+  },
 };
 
 export default documentApi;
