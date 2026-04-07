@@ -19,24 +19,6 @@ export interface UploadedFile {
 }
 
 export const documentApi = {
-  async uploadDocument(file: File): Promise<UploadedFile> {
-    console.log('[documentApi] Calling uploadDocument...');
-    const formData = new FormData();
-    formData.append('document', file);
-
-    const response = await apiClient.post<{ success: boolean; data: UploadedFile; error?: string }>(
-      '/upload',
-      formData,
-      {
-        headers: {
-          'Content-Type': 'multipart/form-data',
-        },
-      }
-    );
-    console.log('[documentApi] uploadDocument response:', response.data);
-    return response.data.data;
-  },
-
   async uploadDocuments(files: File[]): Promise<UploadedFile[]> {
     console.log('[documentApi] Calling uploadDocuments...');
     const formData = new FormData();
@@ -45,7 +27,7 @@ export const documentApi = {
     });
 
     const response = await apiClient.post<{ success: boolean; data: UploadedFile[]; error?: string }>(
-      '/upload/multiple',
+      '/upload',
       formData,
       {
         headers: {
