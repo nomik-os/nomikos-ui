@@ -106,7 +106,7 @@ export default function UserOptions() {
     interlocutory_type: '',
   });
 
-  const [file, setFile] = useState<File | null>(null);
+  const [files, setFiles] = useState<File[]>([]);
   const [uploadStatus, setUploadStatus] = useState<'idle' | 'uploading' | 'success' | 'error'>(
     'idle'
   );
@@ -141,22 +141,27 @@ export default function UserOptions() {
   };
 
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const selectedFile = e.target.files?.[0];
-    if (selectedFile) {
-      setFile(selectedFile);
+    const selectedFiles = Array.from(e.target.files || []);
+    if (selectedFiles.length > 0) {
+      setFiles(selectedFiles);
       setUploadStatus('idle');
     }
   };
 
   const handleUpload = async () => {
-    if (!file) return;
+    if (files.length === 0) return;
     setUploadStatus('uploading');
     try {
-      await documentApi.uploadDocument(file);
+      await documentApi.uploadDocuments(files);
       setUploadStatus('success');
     } catch {
       setUploadStatus('error');
     }
+  };
+
+  const removeFile = (index: number) => {
+    setFiles(files.filter((_, i) => i !== index));
+    setUploadStatus('idle');
   };
 
   const showVettingFlow = form.assistance_type === 'vetting_of_draft';
@@ -316,6 +321,7 @@ export default function UserOptions() {
                   id="document-upload"
                   className="options__upload-input"
                   accept=".pdf,.doc,.docx"
+                  multiple
                   onChange={handleFileChange}
                 />
                 <label htmlFor="document-upload" className="options__upload-label">
@@ -332,31 +338,48 @@ export default function UserOptions() {
                     <polyline points="17 8 12 3 7 8" />
                     <line x1="12" y1="3" x2="12" y2="15" />
                   </svg>
-                  {file ? (
-                    <span className="options__upload-filename">{file.name}</span>
+                  {files.length > 0 ? (
+                    <span className="options__upload-text">{files.length} file(s) selected</span>
                   ) : (
                     <span className="options__upload-text">Click to select or drag & drop</span>
                   )}
                 </label>
               </div>
 
-              {file && (
+              {files.length > 0 && (
+                <div className="options__file-list">
+                  {files.map((file, index) => (
+                    <div key={index} className="options__file-item">
+                      <span className="options__file-name">{file.name}</span>
+                      <button
+                        type="button"
+                        className="options__file-remove"
+                        onClick={() => removeFile(index)}
+                      >
+                        &times;
+                      </button>
+                    </div>
+                  ))}
+                </div>
+              )}
+
+              {files.length > 0 && (
                 <button
                   type="button"
                   className="options__btn options__btn--primary"
                   onClick={handleUpload}
                   disabled={uploadStatus === 'uploading'}
                 >
-                  {uploadStatus === 'uploading' ? 'Uploading...' : 'Upload Document'}
+                  {uploadStatus === 'uploading' ? 'Uploading...' : 'Upload Documents'}
                 </button>
               )}
 
               {uploadStatus === 'success' && (
-                <p className="options__upload-success">Document uploaded successfully!</p>
+                <p className="options__upload-success">Documents uploaded successfully!</p>
               )}
               {uploadStatus === 'error' && (
                 <p className="options__upload-error">
-                  Failed to upload document. Please try again.
+                  Failed to upload documents. Please try again.
                 </p>
               )}
             </section>
