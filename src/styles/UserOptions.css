@@ -217,6 +217,45 @@
   word-break: break-all;
 }
 
+.options__file-list {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  margin-top: 0.5rem;
+}
+
+.options__file-item {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0.6rem 1rem;
+  background: var(--paper);
+  border: 1px solid var(--border);
+  border-radius: 2px;
+}
+
+.options__file-name {
+  font-family: var(--mono);
+  font-size: 0.8rem;
+  color: var(--ink);
+  word-break: break-all;
+  flex: 1;
+}
+
+.options__file-remove {
+  background: none;
+  border: none;
+  font-size: 1.2rem;
+  color: var(--muted);
+  cursor: pointer;
+  padding: 0 0.5rem;
+  transition: color var(--duration) var(--ease);
+}
+
+.options__file-remove:hover {
+  color: var(--ink);
+}
+
 .options__upload-success {
   font-family: var(--mono);
   font-size: 0.78rem;
